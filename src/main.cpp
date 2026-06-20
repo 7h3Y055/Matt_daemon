@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <cstdlib>
-#include "LockFile.hpp"
+#include "MattDaemon.hpp"
 
 int main (int argc, char **argv, char **envp){
     (void)argc;
@@ -21,17 +21,9 @@ int main (int argc, char **argv, char **envp){
         return (1);
     }
     if (pid == 0) {
-        std::string lockPath = "/var/lock/matt_daemon.lock";
-
-        LockFile lockFile(lockPath);
-        if (!lockFile.lock()) {
+        MattDaemon daemon;
+        if (!daemon.start()) {
             return (1);
-        }
-
-
-        
-        while (1) {
-            sleep(1);
         }
     }
 
