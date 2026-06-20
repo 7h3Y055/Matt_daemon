@@ -4,5 +4,6 @@ Matt_daemon
 
 .vscode/
 .idea/
+.cache/
 
 logs/

@@ -65,9 +65,9 @@ Matt_daemon/
 ### 🚀 Main Process (Preparation & Initialization)
 *These steps run in the foreground to verify the environment before daemonizing.*
 
-- [ ] **`1` Check Root Privilege**
+- [x] **`1` Check Root Privilege**
   - Ensure the program is executed with superuser rights (`geteuid() == 0`).
-- [ ] **`3` Check Running Instance (Lock File)**
+- [x] **`3` Check Running Instance (Lock File)**
   - Check `/var/lock/matt_daemon.lock` using `flock()` to prevent running multiple concurrent daemon instances.
 - [ ] **`2` Create Daemon Process**
   - Fork and detach the process from the controlling terminal (`fork()`, `setsid()`, closing std fds, etc.).
@@ -87,3 +87,20 @@ Matt_daemon/
   - Listen for client connections and enforce a maximum limit of 3 concurrent active clients.
 - [ ] **`6` Handle Clean Exit ("quit")**
   - Monitor socket input and shut down the daemon cleanly when a client sends the `"quit"` command.
+
+
+
+
+
+
+
+
+
+
+
+
+  Lock: You immediately call flock(fd, LOCK_EX | LOCK_NB).
+
+LOCK_EX requests an exclusive lock (meaning no one else can hold it).
+
+LOCK_NB means non-blocking. If another daemon already has the lock, flock will immediately return an error (-1) instead of waiting in line.
