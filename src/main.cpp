@@ -13,17 +13,26 @@ int main (int argc, char **argv, char **envp){
         return (1);
     }
 
-    std::string lockPath = "/var/lock/matt_daemon.lock";
 
-    LockFile lockFile(lockPath);
-    if (!lockFile.lock()) {
+
+    int pid = fork();
+    if (pid < 0) {
+        std::cerr << "Cant fork" << std::endl;
         return (1);
     }
+    if (pid == 0) {
+        std::string lockPath = "/var/lock/matt_daemon.lock";
+
+        LockFile lockFile(lockPath);
+        if (!lockFile.lock()) {
+            return (1);
+        }
 
 
-    // Simulate daemon running by sleeping in a loop
-    while (true) {
-        sleep(1);
+        
+        while (1) {
+            sleep(1);
+        }
     }
 
     return (0);
