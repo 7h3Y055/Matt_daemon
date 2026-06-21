@@ -28,21 +28,55 @@ if [ ! -f "$DAEMON_BIN" ]; then
   exit 1
 fi
 
-echo -e "${CYAN}=== 3. Starting the daemon ===${NC}"
-# Since Matt_daemon forks, the parent returns immediately and child goes to bg.
-$DAEMON_BIN
-EXIT_CODE=$?
 
-if [ $EXIT_CODE -ne 0 ]; then
-  echo -e "${RED}Error: Failed to start the daemon (exit code: $EXIT_CODE)${NC}"
+echo -e "${CYAN}=== 3. [Test Round 1: SIGINT (2)] Starting the daemon ===${NC}"
+$DAEMON_BIN
+if [ $? -ne 0 ]; then
+  echo -e "${RED}Error: Failed to start the daemon${NC}"
   exit 1
 fi
-
-# Wait a moment for the child process to initialize and write the lock file
 sleep 1
 
-echo -e "${CYAN}=== 4. Verifying running processes and lock file ===${NC}"
-# Check if lock file exists
+# Verify running and lockfile
+if [ ! -f "$LOCK_FILE_PATH" ]; then
+  echo -e "${RED}Error: Lock file not created${NC}"
+  pkill -x Matt_daemon 2>/dev/null
+  exit 1
+fi
+LOCK_PID_INT=$(cat "$LOCK_FILE_PATH")
+echo "Daemon running under PID: $LOCK_PID_INT"
+
+# Send SIGINT (2)
+echo -e "${CYAN}Sending SIGINT (2) to PID $LOCK_PID_INT...${NC}"
+kill -2 "$LOCK_PID_INT" 2>/dev/null
+sleep 1
+
+# Check if lock file was removed
+if [ -f "$LOCK_FILE_PATH" ]; then
+  echo -e "${RED}Error: Lock file was not cleaned up automatically by SIGINT handler!${NC}"
+  rm -f "$LOCK_FILE_PATH"
+  exit 1
+else
+  echo -e "${GREEN}Lock file was cleaned up automatically by SIGINT handler.${NC}"
+fi
+
+# Verify process terminated
+if ps -p "$LOCK_PID_INT" > /dev/null; then
+  echo -e "${RED}Error: Daemon process is still running after SIGINT!${NC}"
+  kill -9 "$LOCK_PID_INT" 2>/dev/null
+  exit 1
+fi
+echo -e "${GREEN}Daemon process terminated successfully after SIGINT.${NC}"
+
+
+echo -e "${CYAN}=== 4. [Test Round 2: SIGTERM (15)] Starting the daemon ===${NC}"
+$DAEMON_BIN
+if [ $? -ne 0 ]; then
+  echo -e "${RED}Error: Failed to start the daemon${NC}"
+  exit 1
+fi
+sleep 1
+
 if [ ! -f "$LOCK_FILE_PATH" ]; then
   echo -e "${RED}Error: Lock file $LOCK_FILE_PATH was not created!${NC}"
   pkill -x Matt_daemon 2>/dev/null
@@ -50,28 +84,21 @@ if [ ! -f "$LOCK_FILE_PATH" ]; then
 fi
 echo -e "${GREEN}Lock file created successfully at $LOCK_FILE_PATH${NC}"
 
-# Read PID from lock file
-LOCK_PID=$(cat "$LOCK_FILE_PATH")
-echo "PID stored in lock file: $LOCK_PID"
+LOCK_PID_TERM=$(cat "$LOCK_FILE_PATH")
+echo "PID stored in lock file: $LOCK_PID_TERM"
 
-# Verify that a process with this PID is running and it is Matt_daemon
-if ! ps -p "$LOCK_PID" > /dev/null; then
-  echo -e "${RED}Error: Process $LOCK_PID is not running!${NC}"
+# Verify that process is running
+if ! ps -p "$LOCK_PID_TERM" > /dev/null; then
+  echo -e "${RED}Error: Process $LOCK_PID_TERM is not running!${NC}"
   pkill -x Matt_daemon 2>/dev/null
   rm -f "$LOCK_FILE_PATH"
   exit 1
 fi
-echo -e "${GREEN}Verified: Daemon process is running with PID $LOCK_PID.${NC}"
+echo -e "${GREEN}Verified: Daemon process is running with PID $LOCK_PID_TERM.${NC}"
+
 
 echo -e "${CYAN}=== 5. Attempting to start a second instance ===${NC}"
-# This should fail because the lock file is locked.
-# Note: Since the parent process forks and exits with 0 immediately,
-# the command exit code will be 0. However, the child process will print the lock error
-# and exit with 1 in the background. Because the child shares the stderr descriptor,
-# the command output capturing will wait until the child exits and closes it,
-# letting us capture the error message.
 SECOND_OUT=$($DAEMON_BIN 2>&1)
-
 EXPECTED_ERR="Cant open $LOCK_FILE_PATH: File exists"
 if [[ "$SECOND_OUT" != *"$EXPECTED_ERR"* ]]; then
   echo -e "${RED}Error: Second instance started successfully or did not print expected lock error!${NC}"
@@ -83,27 +110,28 @@ if [[ "$SECOND_OUT" != *"$EXPECTED_ERR"* ]]; then
 fi
 echo -e "${GREEN}Second instance failed to start as expected (printed: '$EXPECTED_ERR').${NC}"
 
-echo -e "${CYAN}=== 6. Terminating the daemon ===${NC}"
-# Kill the daemon process using the PID from the lock file
-kill "$LOCK_PID" 2>/dev/null
-# Wait a moment for cleanup
+
+echo -e "${CYAN}=== 6. Terminating the daemon with SIGTERM ===${NC}"
+# Send SIGTERM (15)
+kill -15 "$LOCK_PID_TERM" 2>/dev/null
 sleep 1
 
-# Check if lock file was removed by the destructor/unlock
+# Check if lock file was removed
 if [ -f "$LOCK_FILE_PATH" ]; then
-  echo -e "${YELLOW}Warning: Lock file was not cleaned up automatically. Cleaning up manually...${NC}"
+  echo -e "${RED}Error: Lock file was not cleaned up automatically by SIGTERM handler!${NC}"
   rm -f "$LOCK_FILE_PATH"
+  exit 1
 else
-  echo -e "${GREEN}Lock file was cleaned up successfully.${NC}"
+  echo -e "${GREEN}Lock file was cleaned up automatically by SIGTERM handler.${NC}"
 fi
 
-# Verify process is no longer running
-if ps -p "$LOCK_PID" > /dev/null; then
-  echo -e "${RED}Error: Daemon process is still running!${NC}"
-  kill -9 "$LOCK_PID" 2>/dev/null
+# Verify process terminated
+if ps -p "$LOCK_PID_TERM" > /dev/null; then
+  echo -e "${RED}Error: Daemon process is still running after SIGTERM!${NC}"
+  kill -9 "$LOCK_PID_TERM" 2>/dev/null
   exit 1
 fi
-echo -e "${GREEN}Daemon process terminated successfully.${NC}"
+echo -e "${GREEN}Daemon process terminated successfully after SIGTERM.${NC}"
 
 echo -e "${GREEN}=== ALL TESTS PASSED SUCCESSFULLY ===${NC}"
 exit 0

@@ -1,4 +1,5 @@
 #include "MattDaemon.hpp"
+#include "SignalHandler.hpp"
 #include <unistd.h>
 
 MattDaemon::MattDaemon() : _lockFile("/var/lock/matt_daemon.lock") {}
@@ -21,8 +22,12 @@ bool MattDaemon::start() {
         return false;
     }
 
-    while (true) {
+    SignalHandler::setup();
+
+    while (!SignalHandler::shouldExit()) {
         sleep(1);
     }
+
+    // The program must quit with the sending of a simple "quit" character chain on the opened socket.
     return true;
 }
