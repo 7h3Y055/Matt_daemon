@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include "MattDaemon.hpp"
 #include "Daemonizer.hpp"
+#include "Log.hpp"
 
 int main (int argc, char **argv, char **envp){
     (void)argc;
@@ -14,16 +15,31 @@ int main (int argc, char **argv, char **envp){
         return (1);
     }
 
-    if (!Daemonizer::daemonize()) {
-        std::cerr << "Failed to daemonize" << std::endl;
+    if (!Log::init()) {
         return (1);
     }
 
     MattDaemon daemon;
-    if (!daemon.start()) {
+    if (!daemon.lock()) {
+        Log::close();
         return (1);
     }
 
+    if (!Daemonizer::daemonize()) {
+        std::cerr << "Failed to daemonize" << std::endl;
+        Log::close();
+        return (1);
+    }
+
+    Log::info("Started.");
+
+    if (!daemon.start()) {
+        Log::close();
+        return (1);
+    }
+
+    Log::info("Quitting.");
+    Log::close();
     return (0);
 }
 

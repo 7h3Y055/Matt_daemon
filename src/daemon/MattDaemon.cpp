@@ -1,5 +1,6 @@
 #include "MattDaemon.hpp"
 #include "SignalHandler.hpp"
+#include "Log.hpp"
 #include <unistd.h>
 
 MattDaemon::MattDaemon() : _lockFile("/var/lock/matt_daemon.lock"), _server(4242) {}
@@ -17,12 +18,18 @@ MattDaemon::~MattDaemon() {
     _lockFile.unlock();
 }
 
+bool MattDaemon::lock() {
+    return _lockFile.lock();
+}
+
 bool MattDaemon::start() {
     if (!_lockFile.lock()) {
         return false;
     }
 
+    Log::info("Entering Daemon Mode.");
     SignalHandler::setup();
+    Log::info("Signal handler setup.");
 
     if (!_server.init()) {
         return false;

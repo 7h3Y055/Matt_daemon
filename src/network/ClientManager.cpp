@@ -1,8 +1,10 @@
 #include "ClientManager.hpp"
+#include "Log.hpp"
 #include <unistd.h>
 #include <sys/socket.h>
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 ClientManager::ClientManager(size_t maxClients) : _maxClients(maxClients) {}
 
@@ -26,13 +28,19 @@ ClientManager::~ClientManager() {
 
 bool ClientManager::addClient(int clientFd) {
     if (_clients.size() >= _maxClients) {
-        std::cerr << "Connection rejected: maximum limit of " << _maxClients << " clients reached." << std::endl;
+        std::stringstream ss;
+        ss << "Connection rejected: maximum limit of " << _maxClients << " clients reached.";
+        std::cerr << ss.str() << std::endl;
+        Log::error(ss.str());
         ::close(clientFd);
         return false;
     }
     _clients.push_back(clientFd);
     _clientBuffers[clientFd] = "";
-    std::cout << "Client connected (FD: " << clientFd << ")" << std::endl;
+    
+    std::stringstream ss;
+    ss << "Client connected (FD: " << clientFd << ")";
+    Log::info(ss.str());
     return true;
 }
 
@@ -42,7 +50,10 @@ void ClientManager::removeClient(int clientFd) {
         _clients.erase(it);
         _clientBuffers.erase(clientFd);
         ::close(clientFd);
-        std::cout << "Client disconnected (FD: " << clientFd << ")" << std::endl;
+        
+        std::stringstream ss;
+        ss << "Client disconnected (FD: " << clientFd << ")";
+        Log::info(ss.str());
     }
 }
 
@@ -80,11 +91,11 @@ bool ClientManager::handleClientData(int clientFd) {
             line.pop_back();
         }
         
-        // Log or print the received message
-        std::cout << "Received from client FD " << clientFd << ": " << line << std::endl;
+        // Log the received message
+        Log::info("User input: " + line);
         
         if (line == "quit") {
-            std::cout << "Quit command received from client FD " << clientFd << ". Initiating shutdown." << std::endl;
+            Log::info("Request quit.");
             return false; // Signal that daemon should stop
         }
     }

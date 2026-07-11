@@ -11,6 +11,7 @@ public:
     MattDaemon& operator=(const MattDaemon& other);
     ~MattDaemon();
 
+    bool lock();
     bool start();
 
 private:

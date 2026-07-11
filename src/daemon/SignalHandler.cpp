@@ -2,6 +2,7 @@
 #include <cstring>
 
 volatile std::sig_atomic_t SignalHandler::_shouldExit = 0;
+volatile std::sig_atomic_t SignalHandler::_signalReceived = 0;
 
 SignalHandler::SignalHandler() {}
 
@@ -19,6 +20,7 @@ SignalHandler::~SignalHandler() {}
 void SignalHandler::handleSignal(int signal) {
     if (signal == SIGTERM || signal == SIGINT || signal == SIGQUIT) {
         _shouldExit = 1;
+        _signalReceived = signal;
     }
 }
 
@@ -36,4 +38,8 @@ void SignalHandler::setup() {
 
 bool SignalHandler::shouldExit() {
     return _shouldExit == 1;
+}
+
+int SignalHandler::getSignalReceived() {
+    return _signalReceived;
 }

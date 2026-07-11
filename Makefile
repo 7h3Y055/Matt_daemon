@@ -10,7 +10,7 @@ SRCS = src/main.cpp \
        src/network/ClientManager.cpp \
        src/network/Server.cpp \
        src/logger/Logger.cpp \
-       src/logger/TintinReporter.cpp \
+       src/logger/Log.cpp \
        src/utils/Utils.cpp
 
 # Object files
@@ -33,6 +33,7 @@ INCLUDES = -Iinclude
 all: $(NAME)
 
 $(NAME): $(OBJS)
+	@mkdir -p /var/log/matt_daemon
 	$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
 
 %.o: %.cpp

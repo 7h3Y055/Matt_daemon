@@ -12,9 +12,10 @@ Matt_daemon/
 │   ├── LockFile.hpp
 │   ├── SignalHandler.hpp
 │   ├── Daemonizer.hpp
-│   ├── TintinReporter.hpp
+│   ├── Log.hpp
 │   ├── Logger.hpp
 │   └── Utils.hpp
+│
 │
 ├── src/
 │   ├── main.cpp
@@ -30,7 +31,7 @@ Matt_daemon/
 │   │   └── ClientManager.cpp
 │   │
 │   ├── logger/
-│   │   ├── TintinReporter.cpp
+│   │   ├── Log.cpp
 │   │   └── Logger.cpp
 │   │
 │   └── utils/
@@ -54,7 +55,7 @@ Matt_daemon/
 | Daemonizer | fork(), setsid(), chdir(), close fds |
 | LockFile | /var/lock/matt_daemon.lock management with flock() |
 | SignalHandler | SIGINT, SIGTERM, SIGHUP, etc |
-| TintinReporter | Logging API required by subject |
+| Log | Logging API required by subject |
 | Logger | Low-level file writing |
 | Utils | Timestamp, string helpers |
 
