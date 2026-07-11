@@ -2,6 +2,7 @@
 #define MATTDAEMON_HPP
 
 #include "LockFile.hpp"
+#include "Server.hpp"
 
 class MattDaemon {
 public:
@@ -14,6 +15,7 @@ public:
 
 private:
     LockFile _lockFile;
+    Server _server;
 };
 
 #endif // MATTDAEMON_HPP

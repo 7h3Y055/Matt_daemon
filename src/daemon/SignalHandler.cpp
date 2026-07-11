@@ -3,6 +3,19 @@
 
 volatile std::sig_atomic_t SignalHandler::_shouldExit = 0;
 
+SignalHandler::SignalHandler() {}
+
+SignalHandler::SignalHandler(const SignalHandler& other) {
+    (void)other;
+}
+
+SignalHandler& SignalHandler::operator=(const SignalHandler& other) {
+    (void)other;
+    return *this;
+}
+
+SignalHandler::~SignalHandler() {}
+
 void SignalHandler::handleSignal(int signal) {
     if (signal == SIGTERM || signal == SIGINT || signal == SIGQUIT) {
         _shouldExit = 1;

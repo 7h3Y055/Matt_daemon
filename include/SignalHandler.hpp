@@ -5,6 +5,11 @@
 
 class SignalHandler {
 public:
+    SignalHandler();
+    SignalHandler(const SignalHandler& other);
+    SignalHandler& operator=(const SignalHandler& other);
+    ~SignalHandler();
+
     static void setup();
     static bool shouldExit();
 

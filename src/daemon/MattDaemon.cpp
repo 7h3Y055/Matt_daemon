@@ -2,9 +2,9 @@
 #include "SignalHandler.hpp"
 #include <unistd.h>
 
-MattDaemon::MattDaemon() : _lockFile("/var/lock/matt_daemon.lock") {}
+MattDaemon::MattDaemon() : _lockFile("/var/lock/matt_daemon.lock"), _server(4242) {}
 
-MattDaemon::MattDaemon(const MattDaemon& other) : _lockFile(other._lockFile) {}
+MattDaemon::MattDaemon(const MattDaemon& other) : _lockFile(other._lockFile), _server(4242) {}
 
 MattDaemon& MattDaemon::operator=(const MattDaemon& other) {
     if (this != &other) {
@@ -24,9 +24,11 @@ bool MattDaemon::start() {
 
     SignalHandler::setup();
 
-    while (!SignalHandler::shouldExit()) {
-        sleep(1);
+    if (!_server.init()) {
+        return false;
     }
+
+    _server.run();
 
     // The program must quit with the sending of a simple "quit" character chain on the opened socket.
     return true;
