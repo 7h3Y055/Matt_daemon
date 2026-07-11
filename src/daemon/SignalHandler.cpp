@@ -18,10 +18,8 @@ SignalHandler& SignalHandler::operator=(const SignalHandler& other) {
 SignalHandler::~SignalHandler() {}
 
 void SignalHandler::handleSignal(int signal) {
-    if (signal == SIGTERM || signal == SIGINT || signal == SIGQUIT) {
-        _shouldExit = 1;
-        _signalReceived = signal;
-    }
+    _shouldExit = 1;
+    _signalReceived = signal;
 }
 
 void SignalHandler::setup() {
@@ -31,9 +29,12 @@ void SignalHandler::setup() {
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
 
-    sigaction(SIGTERM, &sa, nullptr);
-    sigaction(SIGINT, &sa, nullptr);
-    sigaction(SIGQUIT, &sa, nullptr);
+    // Register handler for all catchable signals (skip SIGKILL=9 and SIGSTOP=19)
+    for (int sig = 1; sig <= 31; ++sig) {
+        if (sig == SIGKILL || sig == SIGSTOP)
+            continue;
+        sigaction(sig, &sa, nullptr);
+    }
 }
 
 bool SignalHandler::shouldExit() {
