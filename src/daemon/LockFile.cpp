@@ -1,5 +1,4 @@
 #include "LockFile.hpp"
-#include "Log.hpp"
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/file.h>
@@ -39,17 +38,14 @@ bool LockFile::lock() {
 
     if (_fd < 0) {
         std::cerr << "Cant open " << _path << ": " << std::strerror(errno) << std::endl;
-        Log::error("Cant open " + _path + ": " + std::strerror(errno));
         return false;
     }
 
     if (::flock(_fd, LOCK_EX | LOCK_NB) < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN) {
             std::cerr << "Cant open " << _path << ": File exists" << std::endl;
-            Log::error("Cant open " + _path + ": File exists");
         } else {
             std::cerr << "Cant open " << _path << ": " << std::strerror(errno) << std::endl;
-            Log::error("Cant open " + _path + ": " + std::strerror(errno));
         }
         ::close(_fd);
         _fd = -1;
