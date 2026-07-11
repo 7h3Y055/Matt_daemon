@@ -92,7 +92,7 @@ bool ClientManager::handleClientData(int clientFd) {
         }
         
         // Log the received message
-        Log::info("User input: " + line);
+        Log::log("User input: " + line, "LOG");
         
         if (line == "quit") {
             Log::info("Request quit.");

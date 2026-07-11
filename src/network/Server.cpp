@@ -5,11 +5,9 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <iostream>
 #include <cstring>
 #include <algorithm>
 #include <errno.h>
-#include <sstream>
 
 Server::Server(int port) : _port(port), _serverFd(-1), _running(false) {}
 
@@ -152,8 +150,6 @@ void Server::run() {
     }
 
     if (SignalHandler::shouldExit()) {
-        std::stringstream ss;
-        ss << "Signal " << SignalHandler::getSignalReceived() << " received.";
-        Log::info(ss.str());
+        Log::info("Signal handler.");
     }
 }

@@ -2,6 +2,7 @@
 #include "SignalHandler.hpp"
 #include "Log.hpp"
 #include <unistd.h>
+#include <sstream>
 
 MattDaemon::MattDaemon() : _lockFile("/var/lock/matt_daemon.lock"), _server(4242) {}
 
@@ -27,13 +28,19 @@ bool MattDaemon::start() {
         return false;
     }
 
-    Log::info("Entering Daemon Mode.");
-    SignalHandler::setup();
-    Log::info("Signal handler setup.");
-
+    Log::info("Creating server.");
     if (!_server.init()) {
         return false;
     }
+    Log::info("Server created.");
+
+    Log::info("Entering Daemon mode.");
+
+    SignalHandler::setup();
+
+    std::stringstream ss;
+    ss << "started. PID: " << ::getpid() << ".";
+    Log::info(ss.str());
 
     _server.run();
 

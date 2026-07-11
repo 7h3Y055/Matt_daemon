@@ -24,7 +24,7 @@ void Log::error(const std::string& message) {
 }
 
 void Log::log(const std::string& message, const std::string& level) {
-    // Format: [DD/MM/YYYY - HH:MM:SS] [ Level ] - Message
-    std::string formattedMsg = Utils::getCurrentTimestamp() + " [ " + level + " ] - " + message;
+    // Format: [DD/MM/YYYY-HH:MM:SS] [ Level ] - Matt_daemon: Message
+    std::string formattedMsg = Utils::getCurrentTimestamp() + " [ " + level + " ] - Matt_daemon: " + message;
     Logger::log(formattedMsg);
 }
