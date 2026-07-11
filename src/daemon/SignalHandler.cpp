@@ -29,10 +29,8 @@ void SignalHandler::setup() {
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
 
-    // Register handler for all catchable signals (skip SIGKILL=9 and SIGSTOP=19)
+    // Register handler for all signals (SIGKILL and SIGSTOP cannot be caught, sigaction will simply fail)
     for (int sig = 1; sig <= 31; ++sig) {
-        if (sig == SIGKILL || sig == SIGSTOP)
-            continue;
         sigaction(sig, &sa, nullptr);
     }
 }
