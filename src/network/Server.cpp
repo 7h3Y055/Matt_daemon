@@ -1,6 +1,6 @@
 #include "Server.hpp"
 #include "SignalHandler.hpp"
-#include "Log.hpp"
+#include "Tintin_reporter.hpp"
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -32,13 +32,13 @@ Server::~Server() {
 bool Server::init() {
     _serverFd = ::socket(AF_INET, SOCK_STREAM, 0);
     if (_serverFd < 0) {
-        Log::error(std::string("socket creation failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("socket creation failed: ") + std::strerror(errno));
         return false;
     }
 
     int opt = 1;
     if (::setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-        Log::error(std::string("setsockopt SO_REUSEADDR failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("setsockopt SO_REUSEADDR failed: ") + std::strerror(errno));
         ::close(_serverFd);
         _serverFd = -1;
         return false;
@@ -47,7 +47,7 @@ bool Server::init() {
     // Set non-blocking
     int flags = ::fcntl(_serverFd, F_GETFL, 0);
     if (flags < 0 || ::fcntl(_serverFd, F_SETFL, flags | O_NONBLOCK) < 0) {
-        Log::error(std::string("setting socket to non-blocking failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("setting socket to non-blocking failed: ") + std::strerror(errno));
         ::close(_serverFd);
         _serverFd = -1;
         return false;
@@ -60,14 +60,14 @@ bool Server::init() {
     address.sin_port = htons(_port);
 
     if (::bind(_serverFd, (struct sockaddr*)&address, sizeof(address)) < 0) {
-        Log::error(std::string("bind failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("bind failed: ") + std::strerror(errno));
         ::close(_serverFd);
         _serverFd = -1;
         return false;
     }
 
     if (::listen(_serverFd, 5) < 0) {
-        Log::error(std::string("listen failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("listen failed: ") + std::strerror(errno));
         ::close(_serverFd);
         _serverFd = -1;
         return false;
@@ -126,7 +126,7 @@ void Server::run() {
             if (errno == EINTR) {
                 continue;
             }
-            Log::error(std::string("select failed: ") + std::strerror(errno));
+            Tintin_reporter::error(std::string("select failed: ") + std::strerror(errno));
             break;
         }
 
@@ -150,6 +150,6 @@ void Server::run() {
     }
 
     if (SignalHandler::shouldExit()) {
-        Log::info("Signal handler.");
+        Tintin_reporter::info("Signal handler.");
     }
 }

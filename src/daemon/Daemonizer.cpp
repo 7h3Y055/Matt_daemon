@@ -1,5 +1,5 @@
 #include "Daemonizer.hpp"
-#include "Log.hpp"
+#include "Tintin_reporter.hpp"
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -24,7 +24,7 @@ Daemonizer::~Daemonizer() {}
 bool Daemonizer::daemonize() {
     pid_t pid = ::fork();
     if (pid < 0) {
-        Log::error(std::string("fork failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("fork failed: ") + std::strerror(errno));
         return false;
     }
     // Parent process exits successfully
@@ -34,7 +34,7 @@ bool Daemonizer::daemonize() {
 
     // Create a new session and become group leader
     if (::setsid() < 0) {
-        Log::error(std::string("setsid failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("setsid failed: ") + std::strerror(errno));
         return false;
     }
 
@@ -43,7 +43,7 @@ bool Daemonizer::daemonize() {
 
     // Change the working directory to root to release the directory lock
     if (::chdir("/") < 0) {
-        Log::error(std::string("chdir failed: ") + std::strerror(errno));
+        Tintin_reporter::error(std::string("chdir failed: ") + std::strerror(errno));
         return false;
     }
 

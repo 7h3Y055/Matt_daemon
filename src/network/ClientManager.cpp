@@ -1,5 +1,5 @@
 #include "ClientManager.hpp"
-#include "Log.hpp"
+#include "Tintin_reporter.hpp"
 #include <unistd.h>
 #include <sys/socket.h>
 #include <iostream>
@@ -31,7 +31,7 @@ bool ClientManager::addClient(int clientFd) {
         std::stringstream ss;
         ss << "Connection rejected: maximum limit of " << _maxClients << " clients reached.";
         std::cerr << ss.str() << std::endl;
-        Log::error(ss.str());
+        Tintin_reporter::error(ss.str());
         ::close(clientFd);
         return false;
     }
@@ -40,7 +40,7 @@ bool ClientManager::addClient(int clientFd) {
     
     std::stringstream ss;
     ss << "Client connected (FD: " << clientFd << ")";
-    Log::info(ss.str());
+    Tintin_reporter::info(ss.str());
     return true;
 }
 
@@ -53,7 +53,7 @@ void ClientManager::removeClient(int clientFd) {
         
         std::stringstream ss;
         ss << "Client disconnected (FD: " << clientFd << ")";
-        Log::info(ss.str());
+        Tintin_reporter::info(ss.str());
     }
 }
 
@@ -92,10 +92,10 @@ bool ClientManager::handleClientData(int clientFd) {
         }
         
         // Log the received message
-        Log::log("User input: " + line, "LOG");
+        Tintin_reporter::log("User input: " + line, "LOG");
         
         if (line == "quit") {
-            Log::info("Request quit.");
+            Tintin_reporter::info("Request quit.");
             return false; // Signal that daemon should stop
         }
     }

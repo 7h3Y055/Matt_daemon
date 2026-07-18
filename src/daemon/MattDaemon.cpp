@@ -1,6 +1,6 @@
 #include "MattDaemon.hpp"
 #include "SignalHandler.hpp"
-#include "Log.hpp"
+#include "Tintin_reporter.hpp"
 #include <unistd.h>
 #include <sstream>
 
@@ -28,19 +28,19 @@ bool MattDaemon::start() {
         return false;
     }
 
-    Log::info("Creating server.");
+    Tintin_reporter::info("Creating server.");
     if (!_server.init()) {
         return false;
     }
-    Log::info("Server created.");
+    Tintin_reporter::info("Server created.");
 
-    Log::info("Entering Daemon mode.");
+    Tintin_reporter::info("Entering Daemon mode.");
 
     SignalHandler::setup();
 
     std::stringstream ss;
     ss << "started. PID: " << ::getpid() << ".";
-    Log::info(ss.str());
+    Tintin_reporter::info(ss.str());
 
     _server.run();
 

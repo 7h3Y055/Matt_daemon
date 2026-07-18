@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "MattDaemon.hpp"
 #include "Daemonizer.hpp"
-#include "Log.hpp"
+#include "Tintin_reporter.hpp"
 
 int main (int argc, char **argv, char **envp){
     (void)argc;
@@ -15,31 +15,31 @@ int main (int argc, char **argv, char **envp){
         return (1);
     }
 
-    if (!Log::init()) {
+    if (!Tintin_reporter::init()) {
         return (1);
     }
 
     MattDaemon daemon;
     if (!daemon.lock()) {
-        Log::close();
+        Tintin_reporter::close();
         return (1);
     }
 
     if (!Daemonizer::daemonize()) {
         std::cerr << "Failed to daemonize" << std::endl;
-        Log::close();
+        Tintin_reporter::close();
         return (1);
     }
 
-    Log::info("Started.");
+    Tintin_reporter::info("Started.");
 
     if (!daemon.start()) {
-        Log::close();
+        Tintin_reporter::close();
         return (1);
     }
 
-    Log::info("Quitting.");
-    Log::close();
+    Tintin_reporter::info("Quitting.");
+    Tintin_reporter::close();
     return (0);
 }
 

@@ -9,8 +9,7 @@ SRCS = src/main.cpp \
        src/daemon/SignalHandler.cpp \
        src/network/ClientManager.cpp \
        src/network/Server.cpp \
-       src/logger/Logger.cpp \
-       src/logger/Log.cpp \
+       src/logger/Tintin_reporter.cpp \
        src/utils/Utils.cpp
 
 # Object files
