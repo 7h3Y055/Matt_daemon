@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Ben_AFK</class>
+ <widget class="QMainWindow" name="Ben_AFK">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>610</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Ben_AFK</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QMainWindow {
+        background: #27262C;
+
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1001</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="appPage">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <widget class="QLabel" name="connectionStatusLabel">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>10</y>
+        <width>250</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: #ff5555;
+font-size: 13px;
+font-weight: bold;</string>
+      </property>
+      <property name="text">
+       <string>● Not connected</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="sentHistoryBox">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>44</y>
+        <width>460</width>
+        <height>441</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QTextEdit {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: &quot;Menlo&quot;, monospace;
+    font-size: 13px;
+}</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="messageInput">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>500</y>
+        <width>350</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    background-color: #2a2a2a;
+    color: white;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+}
+QLineEdit:focus {
+    border: 1px solid #4044ED;
+}</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sendButton">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>500</y>
+        <width>100</width>
+        <height>36</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+    background-color: #4044ED;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #5257F0;
+}
+QPushButton:pressed {
+    background-color: #3538C4;
+}</string>
+      </property>
+      <property name="text">
+       <string>Send</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="logViewer">
+      <property name="geometry">
+       <rect>
+        <x>500</x>
+        <y>44</y>
+        <width>480</width>
+        <height>506</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPlainTextEdit {
+    background-color: #141414;
+    color: #7CFC7C;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: &quot;Menlo&quot;, monospace;
+    font-size: 12px;
+}</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="loginPage">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <widget class="QLineEdit" name="usernameField">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>200</y>
+        <width>390</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    color: white;
+    font-size: 16px;
+    padding: 6px 2px;
+}
+
+QLineEdit:focus {
+    border-bottom: 2px solid #4da6ff; /* optional highlight color on focus */
+}
+
+QLabel {
+    color: #b0b0b0; /* the grayish &quot;Username&quot;/&quot;Password&quot; text above the field */
+    font-size: 14px;
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="passwordField">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>290</y>
+        <width>391</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    color: white;
+    font-size: 16px;
+    padding: 6px 2px;
+}
+
+QLineEdit:focus {
+    border-bottom: 2px solid #4da6ff; /* optional highlight color on focus */
+}
+
+QLabel {
+    color: #b0b0b0; /* the grayish &quot;Username&quot;/&quot;Password&quot; text above the field */
+    font-size: 14px;
+}
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>100</y>
+        <width>171</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>JK Abode</family>
+        <pointsize>78</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>LOGIN</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="loginButton">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>380</y>
+        <width>391</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: #4044ED;
+color: white;
+border: none;
+border-radius: 6px;
+padding: 10px 20px;
+font-size: 16px;
+font-weight: bold;</string>
+      </property>
+      <property name="text">
+       <string>Login</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="errorLabel">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>450</y>
+        <width>391</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: #ff5555;
+font-size: 13px;
+qproperty-alignment: AlignCenter;</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>33</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
