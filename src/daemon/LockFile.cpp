@@ -37,15 +37,15 @@ bool LockFile::lock() {
     _fd = ::open(_path.c_str(), O_RDWR | O_CREAT, 0640);
 
     if (_fd < 0) {
-        std::cerr << "Cant open " << _path << ": " << std::strerror(errno) << std::endl;
+        std::cerr << "Can't open :" << _path << std::endl;
         return false;
     }
 
     if (::flock(_fd, LOCK_EX | LOCK_NB) < 0) {
         if (errno == EWOULDBLOCK || errno == EAGAIN) {
-            std::cerr << "Cant open " << _path << ": File exists" << std::endl;
+            std::cerr << "Can't open :" << _path << std::endl;
         } else {
-            std::cerr << "Cant open " << _path << ": " << std::strerror(errno) << std::endl;
+            std::cerr << "Can't open :" << _path << std::endl;
         }
         ::close(_fd);
         _fd = -1;

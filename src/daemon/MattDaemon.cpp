@@ -11,6 +11,7 @@ MattDaemon::MattDaemon(const MattDaemon& other) : _lockFile(other._lockFile), _s
 MattDaemon& MattDaemon::operator=(const MattDaemon& other) {
     if (this != &other) {
         _lockFile = other._lockFile;
+        _server = other._server;
     }
     return *this;
 }
