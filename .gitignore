@@ -1,9 +1,40 @@
+# Compiled objects and dependencies
 *.o
 *.d
-Matt_daemon
 
+# Executables
+Matt_daemon
+Ben_AFK
+
+# Build directories
+build/
+Bonus/build/
+Bonus/build-*/
+
+# Logs
+logs/
+*.log
+/var/log/matt_daemon/   # optional, but good to ignore
+
+# IDE / Editor files
 .vscode/
 .idea/
 .cache/
+*.swp
+*.swo
 
-logs/
+# CMake temporary files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+compile_commands.json
+
+# Qt specific
+*.pro.user
+*.qtc
+.qtc/
+
+# Misc
+.DS_Store
+Thumbs.db

@@ -16,34 +16,44 @@ SRCS = src/main.cpp \
 # Object files
 OBJS = $(SRCS:.cpp=.o)
 
-# Executable name
+# Executable names
 NAME = Matt_daemon
+BONUS_NAME = Ben_AFK
 
-# Compilation flags
+# Flags
 CPPFLAGS = -g -Wall -Wextra -Werror
-
-# Linker flags
 LDFLAGS = -pthread
-
-# Include directories
 INCLUDES = -Iinclude
 
-.PHONY: all clean fclean re
+.PHONY: all bonus clean fclean re
 
 all: $(NAME)
 
+bonus: all $(BONUS_NAME)
+
+# Main executable
 $(NAME): $(OBJS)
 	@mkdir -p /var/log/matt_daemon
-	$(CC) $(CPPFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
+# Pattern rule for object files
 %.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CC) $(CPPFLAGS) $(INCLUDES) -c $< -o $@
+
+# Bonus (Qt CMake project)
+$(BONUS_NAME):
+	cmake -S ./Bonus \
+	      -B ./Bonus/build \
+	      -DCMAKE_PREFIX_PATH=/home/vm/Qt/6.11.1/gcc_64 \
+	      -DCMAKE_RUNTIME_OUTPUT_DIRECTORY=$(CURDIR)
+	cmake --build ./Bonus/build --config Release
 
 clean:
 	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(BONUS_NAME)
+	rm -rf Bonus/build
 
 re: fclean all
