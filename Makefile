@@ -32,7 +32,6 @@ bonus: all $(BONUS_NAME)
 
 # Main executable
 $(NAME): $(OBJS)
-	@mkdir -p /var/log/matt_daemon
 	$(CC) $(CPPFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 # Pattern rule for object files

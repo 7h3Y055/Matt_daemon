@@ -34,6 +34,15 @@ bool LockFile::lock() {
         return true;
     }
 
+    size_t lastSlash = _path.find_last_of('/');
+    if (lastSlash != std::string::npos) {
+        std::string dirPath = _path.substr(0, lastSlash);
+        struct stat st = {};
+        if (stat(dirPath.c_str(), &st) == -1) {
+            mkdir(dirPath.c_str(), 0755);
+        }
+    }
+
     _fd = ::open(_path.c_str(), O_RDWR | O_CREAT, 0640);
 
     if (_fd < 0) {

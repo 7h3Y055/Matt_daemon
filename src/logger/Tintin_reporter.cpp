@@ -3,6 +3,7 @@
 #include <errno.h>
 #include <cstring>
 #include <iostream>
+#include <sys/stat.h>
 
 std::ofstream Tintin_reporter::_fileStream;
 std::string Tintin_reporter::_filepath;
@@ -19,6 +20,15 @@ bool Tintin_reporter::init(const std::string& filepath) {
     }
 
     _filepath = filepath;
+
+    size_t lastSlash = _filepath.find_last_of('/');
+    if (lastSlash != std::string::npos) {
+        std::string dirPath = _filepath.substr(0, lastSlash);
+        struct stat st = {};
+        if (stat(dirPath.c_str(), &st) == -1) {
+            mkdir(dirPath.c_str(), 0755);
+        }
+    }
 
     _fileStream.open(_filepath.c_str(), std::ios_base::out | std::ios_base::app);
     if (!_fileStream.is_open()) {
